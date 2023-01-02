@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Threax.Steps", "Threax.Steps\Threax.Steps.csproj", "{EC6D4234-C0FB-42B5-93A0-4C460D2E6045}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EC6D4234-C0FB-42B5-93A0-4C460D2E6045}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC6D4234-C0FB-42B5-93A0-4C460D2E6045}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC6D4234-C0FB-42B5-93A0-4C460D2E6045}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC6D4234-C0FB-42B5-93A0-4C460D2E6045}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FFE9C1C2-5596-4EFD-A038-08495E5BE15A}
+	EndGlobalSection
+EndGlobal
