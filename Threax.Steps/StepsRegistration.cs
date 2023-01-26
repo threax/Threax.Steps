@@ -39,7 +39,13 @@ public static class StepsRegistration
         return services;
     }
 
+    [Obsolete]
     public static void RegisterDeriveType(this IServiceCollection services, Type type)
+    {
+        TryAddScopedDeriveType(services, type);
+    }
+
+    public static void TryAddScopedDeriveType(this IServiceCollection services, Type type)
     {
         services.TryAddScoped(type, s =>
         {
@@ -49,13 +55,45 @@ public static class StepsRegistration
             .ToArray();
             var config = constructor.Invoke(constructorArgs);
 
-            var derive = type.GetMethod("Derive") ?? throw new InvalidOperationException("Cannot find Derive function.");
-            var deriveArgs = derive.GetParameters()
-            .Select(i => s.GetRequiredService(i.ParameterType))
-            .ToArray();
-            derive.Invoke(config, deriveArgs);
+            Derive(s, config);
 
             return config;
         });
+    }
+
+    public static void TryAddScopedDeriveType<T>(this IServiceCollection services, Func<IServiceProvider, T> createFunc)
+        where T : class
+    {
+        services.TryAddScoped<T>(s =>
+        {
+            var config = createFunc.Invoke(s);
+
+            Derive(s, config);
+
+            return config;
+        });
+    }
+
+    public static void TryAddScopedDeriveType<T>(this IServiceCollection services, Func<T> createFunc)
+        where T : class
+    {
+        services.TryAddScoped(s =>
+        {
+            var config = createFunc.Invoke();
+
+            Derive(s, config);
+
+            return config;
+        });
+    }
+
+    private static void Derive<T>(IServiceProvider s, T config) where T : class
+    {
+        var type = typeof(T);
+        var derive = type.GetMethod("Derive") ?? throw new InvalidOperationException("Cannot find Derive function.");
+        var deriveArgs = derive.GetParameters()
+        .Select(i => s.GetRequiredService(i.ParameterType))
+        .ToArray();
+        derive.Invoke(config, deriveArgs);
     }
 }
