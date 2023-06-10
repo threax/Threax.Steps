@@ -15,6 +15,7 @@ public static class StepsRegistration
             assembly = Assembly.GetEntryAssembly() ?? throw new InvalidOperationException("Cannot find entry assembly");
         }
 
+        services.AddSingleton<IStepThread, StepThread>();
         services.AddSingleton<IStepRunner>(s => new StepRunner(s));
         services.AddSingleton<IHelpInfoFinder>(s => new HelpInfoFinder(@namespace, assembly));
         services.AddScoped<ICurrentScopeType, CurrentScopeType>();

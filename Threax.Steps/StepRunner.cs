@@ -84,19 +84,47 @@ public class StepRunner : IStepRunner
             }
         }
 
-        task = methodInfo.Invoke(instance, stepArgs) as Task;
-
-        if (task != null)
+        try
         {
-            await task;
-        }
+            task = methodInfo.Invoke(instance, stepArgs) as Task;
 
-        sw.Stop();
-        logger.LogInformation("-----------------------------------------------------");
-        logger.LogInformation("-");
-        logger.LogInformation($"- Step '{stepName}' completed in '{sw.Elapsed}'");
-        logger.LogInformation("-");
-        logger.LogInformation("-----------------------------------------------------");
+            if (task != null)
+            {
+                await task;
+            }
+
+            sw.Stop();
+            logger.LogInformation("-----------------------------------------------------");
+            logger.LogInformation("-");
+            logger.LogInformation($"- Step '{stepName}' completed in '{sw.Elapsed}'");
+            logger.LogInformation("-");
+            logger.LogInformation("-----------------------------------------------------");
+        }
+        catch (StepRunnerHandledException ex)
+        {
+            sw.Stop();
+            logger.LogError("-----------------------------------------------------");
+            logger.LogError("-");
+            logger.LogError($"- Child Step of Step '{stepName}' failed in '{sw.Elapsed}'");
+            logger.LogError("-");
+            logger.LogError("-----------------------------------------------------");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            sw.Stop();
+            logger.LogError("-----------------------------------------------------");
+            logger.LogError("-");
+            logger.LogError("- Root Failure:");
+            logger.LogError($"- Step '{stepName}' failed in '{sw.Elapsed}'");
+            foreach (var line in ex.ToString().Split('\n'))
+            {
+                logger.LogError($"- {line.Replace("\r", "")}");
+            }
+            logger.LogError("-");
+            logger.LogError("-----------------------------------------------------");
+            throw new StepRunnerHandledException(stepName, $"Step '{stepName}' failed.", ex);
+        }
     }
 }
 
@@ -118,4 +146,15 @@ public interface ICurrentScopeType
 class CurrentScopeType : ICurrentScopeType
 {
     public Type Current { get; set; }
+}
+
+class StepRunnerHandledException : Exception
+{
+    public StepRunnerHandledException(String step, String message, Exception innerException)
+        : base(message, innerException)
+    {
+        this.Step = step;
+    }
+
+    public String Step { get; init; }
 }
