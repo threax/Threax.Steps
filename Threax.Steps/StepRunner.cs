@@ -100,7 +100,7 @@ public class StepRunner : IStepRunner
             logger.LogInformation("-");
             logger.LogInformation("-----------------------------------------------------");
         }
-        catch (StepRunnerHandledException ex)
+        catch (StepRunnerHandledException)
         {
             sw.Stop();
             logger.LogError("-----------------------------------------------------");
@@ -115,8 +115,8 @@ public class StepRunner : IStepRunner
             sw.Stop();
             logger.LogError("-----------------------------------------------------");
             logger.LogError("-");
-            logger.LogError("- Root Failure:");
             logger.LogError($"- Step '{stepName}' failed in '{sw.Elapsed}'");
+            logger.LogError("- Root Failure:");
             foreach (var line in ex.ToString().Split('\n'))
             {
                 logger.LogError($"- {line.Replace("\r", "")}");
