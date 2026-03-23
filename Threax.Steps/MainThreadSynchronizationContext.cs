@@ -41,7 +41,9 @@ public class MainThreadSynchronizationContext : SynchronizationContext
 
         if (completeException != null)
         {
-            throw completeException;
+            var tmp = completeException;
+            completeException = null;
+            throw tmp;
         }
     }
 
