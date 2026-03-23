@@ -19,7 +19,7 @@ public class LogExceptionTests
         using var scope = serviceProvider.CreateScope();
 
         var stepThread = scope.ServiceProvider.GetRequiredService<IStepThread>();
-        await Assert.ThrowsExceptionAsync<AggregateException>(() => stepThread.Run(typeof(BgStep)));
+        await Assert.ThrowsExactlyAsync<AggregateException>(() => stepThread.Run(typeof(BgStep)));
     }
 
     record BgStep
@@ -43,7 +43,7 @@ public class LogExceptionTests
         using var scope = serviceProvider.CreateScope();
 
         var stepThread = scope.ServiceProvider.GetRequiredService<IStepThread>();
-        await Assert.ThrowsExceptionAsync<AggregateException>(() => stepThread.Run(typeof(VoidStep)));
+        await Assert.ThrowsExactlyAsync<AggregateException>(() => stepThread.Run(typeof(VoidStep)));
     }
 
     record VoidStep
@@ -66,7 +66,7 @@ public class LogExceptionTests
         using var scope = serviceProvider.CreateScope();
 
         var stepThread = scope.ServiceProvider.GetRequiredService<IStepThread>();
-        await Assert.ThrowsExceptionAsync<AggregateException>(() => stepThread.Run(typeof(MidStep)));
+        await Assert.ThrowsExactlyAsync<AggregateException>(() => stepThread.Run(typeof(MidStep)));
     }
 
     record MidStep
@@ -89,7 +89,7 @@ public class LogExceptionTests
         using var scope = serviceProvider.CreateScope();
 
         var stepThread = scope.ServiceProvider.GetRequiredService<IStepThread>();
-        await Assert.ThrowsExceptionAsync<AggregateException>(() => stepThread.Run(typeof(TopStep)));
+        await Assert.ThrowsExactlyAsync<AggregateException>(() => stepThread.Run(typeof(TopStep)));
     }
 
     record TopStep
@@ -112,7 +112,7 @@ public class LogExceptionTests
         using var scope = serviceProvider.CreateScope();
 
         var stepThread = scope.ServiceProvider.GetRequiredService<IStepThread>();
-        await Assert.ThrowsExceptionAsync<AggregateException>(() => stepThread.Run(typeof(PassAndFailStep)));
+        await Assert.ThrowsExactlyAsync<AggregateException>(() => stepThread.Run(typeof(PassAndFailStep)));
     }
 
     record SuccessStep
@@ -163,7 +163,7 @@ public class LogExceptionTests
         using var scope = serviceProvider.CreateScope();
 
         var stepThread = scope.ServiceProvider.GetRequiredService<IStepThread>();
-        await Assert.ThrowsExceptionAsync<AggregateException>(() => stepThread.Run(typeof(FailAndFailStep)));
+        await Assert.ThrowsExactlyAsync<AggregateException>(() => stepThread.Run(typeof(FailAndFailStep)));
     }
 
     record SlowFailStep
@@ -203,7 +203,7 @@ public class LogExceptionTests
         using var scope = serviceProvider.CreateScope();
 
         var stepThread = scope.ServiceProvider.GetRequiredService<IStepThread>();
-        var exception = await Assert.ThrowsExceptionAsync<AggregateException>(() => stepThread.Run(typeof(FailMultiInChild)));
+        var exception = await Assert.ThrowsExactlyAsync<AggregateException>(() => stepThread.Run(typeof(FailMultiInChild)));
 
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<LogExceptionTests>>();
         logger.LogInformation("Sample top level exception.");
@@ -236,7 +236,7 @@ public class LogExceptionTests
         using var scope = serviceProvider.CreateScope();
 
         var stepThread = scope.ServiceProvider.GetRequiredService<IStepThread>();
-        var exception = await Assert.ThrowsExceptionAsync<AggregateException>(() => stepThread.Run(typeof(FailInBgThread)));
+        var exception = await Assert.ThrowsExactlyAsync<AggregateException>(() => stepThread.Run(typeof(FailInBgThread)));
 
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<LogExceptionTests>>();
         logger.LogInformation("Sample top level exception.");

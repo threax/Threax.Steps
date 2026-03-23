@@ -2,11 +2,12 @@
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Reflection;
-
 namespace Threax.Steps;
 
 public interface IStepRunner
 {
+    void ResumeWithStep<T>();
+    void ResumeWithStep(Type type);
     Task RunAsync(Delegate del);
     Task RunAsync(MethodInfo methodInfo);
     Task RunAsync(Type stepType);
@@ -100,6 +101,11 @@ public class StepRunner : IStepRunner
             logger.LogInformation("-");
             logger.LogInformation("-----------------------------------------------------");
         }
+        catch (StepRunnerResumeWithStepException)
+        {
+            //This intentionally does not log anything.
+            throw;
+        }
         catch (StepRunnerHandledException)
         {
             sw.Stop();
@@ -125,6 +131,16 @@ public class StepRunner : IStepRunner
             logger.LogError("-----------------------------------------------------");
             throw new StepRunnerHandledException(stepName, $"Step '{stepName}' failed.", ex);
         }
+    }
+
+    public void ResumeWithStep<T>()
+    {
+        ResumeWithStep(typeof(T));
+    }
+
+    public void ResumeWithStep(Type type)
+    {
+        throw new StepRunnerResumeWithStepException(type);
     }
 }
 
@@ -157,4 +173,14 @@ class StepRunnerHandledException : Exception
     }
 
     public String Step { get; init; }
+}
+
+public class StepRunnerResumeWithStepException : Exception
+{
+    internal StepRunnerResumeWithStepException(Type resumeStep)
+    {
+        ResumeStep = resumeStep;
+    }
+
+    public Type ResumeStep { get; }
 }
